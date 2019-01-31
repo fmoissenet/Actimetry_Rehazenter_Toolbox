@@ -5,7 +5,7 @@
 % -------------------------------------------------------------------------
 % Subject:      Toolbox launcher
 % -------------------------------------------------------------------------
-% Author: F. Moissenet, G. Areno
+% Authors: F. Moissenet, G. Areno
 % Date of creation: 31/01/2019
 % Version: 1
 % =========================================================================
@@ -63,7 +63,9 @@ if strcmp(temp1,'1')
     end
 else
     file = uigetfile('*.mat', 'Sélectionnez les fichiers de mesure requis','MultiSelect','on');
-    load(file);
+    for i = 1:length(file)
+        data_Mes(i) = load(file);
+    end
 end
 
 % -------------------------------------------------------------------------
