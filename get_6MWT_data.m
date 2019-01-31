@@ -10,7 +10,7 @@
 % Version: 1
 % =========================================================================
 
-function data_6MWT = get_6MWT_data(patient)
+function get_6MWT_data(patient,toolboxFolder)
 
 % -------------------------------------------------------------------------
 % Importer le 6MWT
@@ -55,7 +55,10 @@ data_6MWT.ref_6MWT  = mean(data_6MWT.quantiteM(round(time_6MWT(1,1):...
 % Sauvegarder les données
 % -------------------------------------------------------------------------
 close all;
+folder = uigetdir('','Sélectionner le répertoire de destination du fichier de sauvegarde');
+cd(folder);
 save([patient.lastname,'_',...
       patient.firstname,'_',...
       patient.dateofbirth,'_',...
       '6MWT_',regexprep(data_6MWT.Date,'/',''),'.mat'],'data_6MWT');
+cd(toolboxFolder);
