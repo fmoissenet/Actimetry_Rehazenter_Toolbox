@@ -14,37 +14,26 @@ clearvars;
 close all;
 toolboxFolder = 'C:\Users\florent.moissenet\Documents\Professionnel\routines\github\Actimetry_Rehazenter_Toolbox';
 addpath(toolboxFolder);
+patient = [];
 warning('off');
 clc;
 
 disp('Bienvenue Cher Maître Vénérable !');
-disp(' ');
-
-% -------------------------------------------------------------------------
-% Définir le patient
-% -------------------------------------------------------------------------
-type = input('>>> Importation de fichiers (1) ou uniquement affichage de résultats (2)? ','s');
-if strcmp(type,'1')
-    patient.lastname  = input('- Nom du patient : ','s');
-    patient.firstname = input('- Prénom du patient : ','s');
-    patient.dateofbirth = input('- Date de naissance du patient (JJMMAAAA) : ','s');
-end
 
 % -------------------------------------------------------------------------
 % Importer les données du 6MWT
 % -------------------------------------------------------------------------
 clear temp;
 disp(' '); disp('>>> Importation des données du 6MWT');
-if strcmp(type,'1')
-    temp = input('- Nouvelle importation? (OUI/NON) : ','s');
-    if strcmp(temp,'OUI')
-        get_6MWT_data(patient,toolboxFolder);
-        disp('- Fichier 6MWT importé');
-    else
-        disp('- Aucun fichier importé');
-    end
+temp = input('- Nouvelle importation? (OUI/NON) : ','s');
+if strcmp(temp,'OUI')
+    patient.lastname  = input('- Nom du patient : ','s');
+    patient.firstname = input('- Prénom du patient : ','s');
+    patient.dateofbirth = input('- Date de naissance du patient (JJMMAAAA) : ','s');
+    get_6MWT_data(patient,toolboxFolder);
+    disp('- Fichier 6MWT importé');
 else
-    disp('Aucun fichier importé');
+    disp('- Aucun fichier importé');
 end
 
 % -------------------------------------------------------------------------
@@ -52,17 +41,18 @@ end
 % -------------------------------------------------------------------------
 clear temp;
 disp(' '); disp('>>> Importation des données de mesure patient');
-if strcmp(type,'1')
-    temp = input('- Nouvelle importation? (OUI/NON) : ','s');
-    if strcmp(temp,'OUI')
-        nfile = input('- Combien de fichiers à importer? : ');
-        get_Mes_data(patient,toolboxFolder,nfile);
-        disp(['- ',num2str(nfile),' fichier(s) de mesures importé(s)']);
-    else
-        disp('Aucun fichier importé');
+temp = input('- Nouvelle importation? (OUI/NON) : ','s');
+if strcmp(temp,'OUI')
+    if isempty(patient)
+        patient.lastname  = input('- Nom du patient : ','s');
+        patient.firstname = input('- Prénom du patient : ','s');
+        patient.dateofbirth = input('- Date de naissance du patient (JJMMAAAA) : ','s');
     end
+    nfile = input('- Combien de fichiers à importer? : ');
+    get_Mes_data(patient,toolboxFolder,nfile);
+    disp(['- ',num2str(nfile),' fichier(s) de mesures importé(s)']);
 else
-    disp('Aucun fichier importé');
+    disp('- Aucun fichier importé');
 end
 
 % -------------------------------------------------------------------------
@@ -70,4 +60,9 @@ end
 % -------------------------------------------------------------------------
 clear temp;
 disp(' '); disp('>>> Affichage des résultats');
-plot_result();
+temp = input('- Affichage des résultats? (OUI/NON) : ','s');
+if strcmp(temp,'OUI')
+    plot_result();
+else
+    disp('- Aucun affichage demandé');
+end

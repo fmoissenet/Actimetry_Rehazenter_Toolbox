@@ -15,7 +15,7 @@ function get_6MWT_data(patient,toolboxFolder)
 % -------------------------------------------------------------------------
 % Importer le 6MWT
 % -------------------------------------------------------------------------
-[file,folder] = uigetfile('*.csv', 'Sélectionnez le fichier correspondant au test de 6 minutes');
+[file,folder] = uigetfile('*_6MWT*.csv', 'Sélectionnez le fichier correspondant au test de 6 minutes');
 data_6MWT     = importdata([folder,file],',');
 
 % -------------------------------------------------------------------------

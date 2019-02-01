@@ -12,11 +12,17 @@
 
 function plot_result()
 
+global i;
+global data_6MWT;
+global data_Mes;
+global quantiteM_norm;
+global hsl;
+
 % -------------------------------------------------------------------------
 % Sélection les fichiers
 % -------------------------------------------------------------------------
 % Ouvrir le fichier 6MWT
-[file,folder] = uigetfile('*_6MWT*.mat', 'Sélectionnez le fichier 6MWT requis');
+[file,folder] = uigetfile('*.mat', 'Sélectionnez le fichier 6MWT requis');
 load([folder,file]);
 % Ouvrir le ou les fichiers de mesures
 [file,folder] = uigetfile('*.mat', 'Sélectionnez les fichiers de mesure requis','MultiSelect','on');
@@ -52,3 +58,43 @@ for i = 1:length(data_Mes)
     legends = [legends ['Test du ',data_Mes(i).Date]];
 end
 legend(legends);
+
+% -------------------------------------------------------------------------
+% Afficher les résultats avec filtrage par moyenne glissante
+% -------------------------------------------------------------------------
+figure();
+legends = {};
+% Paramètres de la moyenne glissante
+slmin = 1;
+if str2num(data_Mes(1).Epoch) == 1
+    slmax = 600; % moyenne sur 60 s;
+elseif str2num(data_Mes(1).Epoch) == 10
+    slmax = 60; % moyenne sur 60 s;
+end
+hsl = uicontrol('Style','slider','Min',slmin,'Max',slmax,...
+    'SliderStep',[1 1]./(slmax-slmin),'Value',1,...
+    'Position',[20 20 200 20]);
+set(hsl,'Callback',@MyCallback);
+
+function MyCallback(hObject,eventdata)
+global i;
+global data_6MWT;
+global data_Mes;
+global quantiteM_norm;
+global hsl;
+
+for i = 1:length(data_Mes)
+    clear quantiteM_norm;
+    hold on; box on; grid on;
+    title('Résultats normalisés et lissés');
+    xlabel(['Temps (1 unité = ',data_Mes(1).Epoch,' s)']);
+    ylabel('Quantité de mouvement (%6MWT)');
+    % Normaliser la quantité de mouvement / moyenne obtenue au 6MWT    
+    quantiteM_norm = data_Mes(i).quantiteM/round(data_6MWT.ref_6MWT)*100; % %6MWT
+    % Appliquer une moyenne glissante sur les données (slider) 
+    plot(movmean(quantiteM_norm,hObject.Value));
+    sliderValue = get(hsl, 'Value');
+    legends = ['Moyenne glissante : ',num2str(sliderValue),' unité de temps'];
+    legend(legends);
+end
+% delete(gca); 

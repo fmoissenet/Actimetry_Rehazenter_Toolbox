@@ -21,28 +21,23 @@ disp('Bienvenue Cher Maître Vénérable !');
 disp(' ');
 
 % -------------------------------------------------------------------------
-% Définir le patient
-% -------------------------------------------------------------------------
-temp1 = input('>>> Importation de fichiers (1) ou uniquement affichage de résultats (2)? ','s');
-if strcmp(temp1,'1')
-    patient.lastname  = input('Nom du patient : ','s');
-    patient.firstname = input('Prénom du patient : ','s');
-    patient.dateofbirth = input('Date de naissance du patient (JJMMAAAA) : ','s');
-end
-
-% -------------------------------------------------------------------------
 % Importer les données du 6MWT
 % -------------------------------------------------------------------------
 clear temp;
 disp(' '); disp('>>> Importation des données du 6MWT');
-if strcmp(temp1,'1')
-    temp = input('Nouvelle importation? (OUI/NON) : ','s');
+if strcmp(type,'1')
+    temp = input('- Nouvelle importation? (OUI/NON) : ','s');
     if strcmp(temp,'OUI')
+        patient.lastname  = input('- Nom du patient : ','s');
+        patient.firstname = input('- Prénom du patient : ','s');
+        patient.dateofbirth = input('- Date de naissance du patient (JJMMAAAA) : ','s');
         get_6MWT_data(patient,toolboxFolder);
+        disp('- Fichier 6MWT importé');
     else
-        [file,folder] = uigetfile('*.mat', 'Sélectionnez le fichier 6MWT requis');
-        load([folder,file]);
+        disp('- Aucun fichier importé');
     end
+else
+    disp('Aucun fichier importé');
 end
 
 % -------------------------------------------------------------------------
@@ -50,30 +45,26 @@ end
 % -------------------------------------------------------------------------
 clear temp;
 disp(' '); disp('>>> Importation des données de mesure patient');
-if strcmp(temp1,'1')
-    temp = input('Nouvelle importation? (OUI/NON) : ','s');
+if strcmp(type,'1')
+    temp = input('- Nouvelle importation? (OUI/NON) : ','s');
     if strcmp(temp,'OUI')
-        nfile = input('Combien de fichiers à importer? : ');
+        if isexist(lastname)
+        patient.lastname  = input('- Nom du patient : ','s');
+        patient.firstname = input('- Prénom du patient : ','s');
+        patient.dateofbirth = input('- Date de naissance du patient (JJMMAAAA) : ','s');
+        nfile = input('- Combien de fichiers à importer? : ');
         get_Mes_data(patient,toolboxFolder,nfile);
+        disp(['- ',num2str(nfile),' fichier(s) de mesures importé(s)']);
+    else
+        disp('Aucun fichier importé');
     end
+else
+    disp('Aucun fichier importé');
 end
 
 % -------------------------------------------------------------------------
 % Afficher les résultats
 % -------------------------------------------------------------------------
 clear temp;
-disp(' '); disp('>>> Affichage des résultats');[file,folder] = uigetfile('*.mat', 'Sélectionnez le fichier 6MWT requis');
-    load([folder,file]);
-[file,folder] = uigetfile('*.mat', 'Sélectionnez les fichiers de mesure requis','MultiSelect','on');
-if iscell(file)
-    n = size(file,2);
-else
-    n = 1;
-end
-for i = 1:n
-    load([folder,file{i}]);
-    temp(i) = data_Mes;
-    clear data_Mes;
-end
-data_Mes = temp;
-plot_result(data_6MWT,data_Mes);
+disp(' '); disp('>>> Affichage des résultats');
+plot_result();
