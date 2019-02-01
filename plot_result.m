@@ -52,15 +52,20 @@ end
 % Préparer l'affichage HH:MM
 minVal = [1:1:round(size(data_Mes(imaxMes).quantiteM,1)/(60/str2num(data_Mes(imaxMes).Epoch)))];
 for i = 1:length(minVal)
+    clear temp;
     start = str2num(data_Mes(imaxMes).Stime);
     if minVal(i) >= 60
-        start = start+1;
-        minVal(i) = minVal(i)-60;
+        start = start+1; % Gestion du passage d'heure
+        if start > 24    % Gestion du passage de jour
+            start = 1;
+        end
+        temp = minVal(i)-60;
+    else
+        temp = minVal(i);
     end
-    hourVal{i} = [num2str(start),':',num2str(minVal(i))];
+    hourVal{i} = [num2str(start),':',num2str(temp)];
 end
 % Adapter en fonction de l'interval de temps souhaité
-minVal = [1:1:round(size(data_Mes(imaxMes).quantiteM,1)/(60/str2num(data_Mes(imaxMes).Epoch)))];
 j = 1;
 for i = 1:interval:length(minVal)
     xVal(j) = minVal(i)*size(data_Mes(imaxMes).quantiteM,1)/length(minVal);
