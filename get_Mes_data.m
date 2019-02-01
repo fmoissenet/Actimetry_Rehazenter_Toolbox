@@ -48,7 +48,9 @@ for i = 1:nfile
         data_Mes.File = file{i};
     end
     data_Mes.Date     = temp3(12:end);
-    data_Mes.Stime   = temp2(12:13);
+    data_Mes.Hour     = temp2(12:13);
+    data_Mes.Min      = temp2(15:16);
+    data_Mes.Sec      = temp2(18:19);
     data_Mes.Epoch    = temp4(31:end);
 
     % ---------------------------------------------------------------------

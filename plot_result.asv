@@ -49,27 +49,23 @@ for ifile = 1:n
     title(['Test du ',data_Mes.Date]);
     
     % Préparer l'affichage HH:MM
+    minVal = [0:1:round(size(data_Mes.AccNORM,1)/(60/str2num(data_Mes.Epoch)))];
     hour = str2num(data_Mes.Hour);
     minute = str2num(data_Mes.Min);
-    minVal = [0:1:round(size(data_Mes.AccNORM,1)/(60/str2num(data_Mes.Epoch)))];
-    for i = minVal
-        tminute = minute+i;
-        thour = hour;
-        % Gestion du passage d'heure 
-        extra = fix(tminute/60);
-        if extra >= 1           
-            tminute = tminute-60*fix(tminute/60);
+    for i = 1:length(minVal)
+        clear temp;
+        for j = 1:fix(max(minVal/60)) 
+            if minute+minVal(i) >= 60*j
+                hour = hour+j; % Gestion du passage d'heure
+                minute = minute+minVal(i)-60*j;
+            else
+                minute = minute+minVal(i);
+            end
         end
-        thour = thour+extra;
-        % Gestion du passage de jour
-        if thour > 24 
-            thour = thour-24;
-        end
-        % Gestion de l'affichage des minutes
-        if tminute < 10
-            hourVal{i+1} = [num2str(thour),':0',num2str(tminute)];
+        if minute < 10
+            hourVal{i} = [num2str(hour),':0',num2str(minute)];
         else
-            hourVal{i+1} = [num2str(thour),':',num2str(tminute)];
+            hourVal{i} = [num2str(hour),':',num2str(minute)];
         end
     end
     
