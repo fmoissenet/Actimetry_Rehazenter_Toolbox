@@ -36,18 +36,20 @@ for i = 1:nfile
 
     % ---------------------------------------------------------------------
     % Extraire les metadata concernant les mesures
-    % ---------------------------------------------------------------------
+    % ---------------------------------------------------------------------    
     temp1             = data_Mes.textdata{2,1};
-    temp2             = data_Mes.textdata{4,1};
-    temp3             = data_Mes.textdata{5,1};
+    temp2             = data_Mes.textdata{3,1};
+    temp3             = data_Mes.textdata{4,1};
+    temp4             = data_Mes.textdata{5,1};
     data_Mes.SN       = temp1(16:end);
     if nfile == 1
         data_Mes.File = file;
     else
         data_Mes.File = file{i};
     end
-    data_Mes.Date     = temp2(12:end);
-    data_Mes.Epoch    = temp3(31:end);
+    data_Mes.Date     = temp3(12:end);
+    data_Mes.Stime   = temp2(12:13);
+    data_Mes.Epoch    = temp4(31:end);
 
     % ---------------------------------------------------------------------
     % Extraire les données des mesures sur patient

@@ -10,7 +10,7 @@
 % Version: 1
 % =========================================================================
 
-function plot_result()
+function plot_result(interval)
 
 % -------------------------------------------------------------------------
 % Sélection les fichiers
@@ -41,7 +41,37 @@ data_Mes = temp;
 % -------------------------------------------------------------------------
 figure(); hold on; box on; grid on;
 title('Résultats normalisés');
-xlabel(['Temps (1 unité = ',data_Mes(1).Epoch,' s)']);
+% Trouver la plus longue mesure
+maxMes = 0;
+imaxMes = [];
+for i = 1:length(data_Mes)
+    if size(data_Mes(i).quantiteM,1) > maxMes
+        imaxMes = i;
+    end
+end
+% Préparer l'affichage HH:MM
+minVal = [1:1:round(size(data_Mes(imaxMes).quantiteM,1)/(60/str2num(data_Mes(imaxMes).Epoch)))];
+for i = 1:length(minVal)
+    start = str2num(data_Mes(imaxMes).Stime);
+    if minVal(i) >= 60
+        start = start+1;
+        minVal(i) = minVal(i)-60;
+    end
+    hourVal{i} = [num2str(start),':',num2str(minVal(i))];
+end
+% Adapter en fonction de l'interval de temps souhaité
+minVal = [1:1:round(size(data_Mes(imaxMes).quantiteM,1)/(60/str2num(data_Mes(imaxMes).Epoch)))];
+j = 1;
+for i = 1:interval:length(minVal)
+    xVal(j) = minVal(i)*size(data_Mes(imaxMes).quantiteM,1)/length(minVal);
+    xLab{j} = hourVal{i};
+    j = j+1;
+end
+% Afficher les résultats
+xticks(xVal);
+xticklabels(xLab);
+xtickangle(90);
+xlabel(['Temps (interval de ',num2str(interval),' min)']);
 ylabel('Quantité de mouvement (%6MWT)');
 legends = {};
 for i = 1:length(data_Mes)

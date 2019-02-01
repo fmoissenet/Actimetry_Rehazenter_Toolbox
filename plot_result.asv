@@ -12,17 +12,11 @@
 
 function plot_result()
 
-global i;
-global data_6MWT;
-global data_Mes;
-global quantiteM_norm;
-global hsl;
-
 % -------------------------------------------------------------------------
 % Sélection les fichiers
 % -------------------------------------------------------------------------
 % Ouvrir le fichier 6MWT
-[file,folder] = uigetfile('*.mat', 'Sélectionnez le fichier 6MWT requis');
+[file,folder] = uigetfile('*_6MWT*.mat', 'Sélectionnez le fichier 6MWT requis');
 load([folder,file]);
 % Ouvrir le ou les fichiers de mesures
 [file,folder] = uigetfile('*.mat', 'Sélectionnez les fichiers de mesure requis','MultiSelect','on');
@@ -47,7 +41,35 @@ data_Mes = temp;
 % -------------------------------------------------------------------------
 figure(); hold on; box on; grid on;
 title('Résultats normalisés');
-xlabel(['Temps (1 unité = ',data_Mes(1).Epoch,' s)']);
+% Trouver la plus longue mesure
+maxMes = 0;
+for i = 1:length(data_Mes)
+    if 
+    end
+% Préparer l'affichage HH:MM
+minVal = [1:1:round(size(data_Mes(1).quantiteM,1)/(60/str2num(data_Mes(1).Epoch)))];
+for i = 1:length(minVal)
+    start = str2num(data_Mes.Stime);
+    if minVal(i) >= 60
+        start = start+1;
+        minVal(i) = minVal(i)-60;
+    end
+    hourVal{i} = [num2str(start),':',num2str(minVal(i))];
+end
+% Adapter en fonction de l'interval de temps souhaité
+interval = 5; % min
+minVal = [1:1:round(size(data_Mes(1).quantiteM,1)/(60/str2num(data_Mes(1).Epoch)))];
+j = 1;
+for i = 1:interval:length(minVal)
+    xVal(j) = minVal(i)*size(data_Mes(1).quantiteM,1)/length(minVal);
+    xLab{j} = hourVal{i};
+    j = j+1;
+end
+% Afficher les résultats
+xticks(xVal);
+xticklabels(xLab);
+xtickangle(90);
+xlabel(['Temps (interval de ',num2str(interval),' min)']);
 ylabel('Quantité de mouvement (%6MWT)');
 legends = {};
 for i = 1:length(data_Mes)
@@ -58,43 +80,3 @@ for i = 1:length(data_Mes)
     legends = [legends ['Test du ',data_Mes(i).Date]];
 end
 legend(legends);
-
-% -------------------------------------------------------------------------
-% Afficher les résultats avec filtrage par moyenne glissante
-% -------------------------------------------------------------------------
-figure();
-legends = {};
-% Paramètres de la moyenne glissante
-slmin = 1;
-if str2num(data_Mes(1).Epoch) == 1
-    slmax = 600; % moyenne sur 60 s;
-elseif str2num(data_Mes(1).Epoch) == 10
-    slmax = 60; % moyenne sur 60 s;
-end
-hsl = uicontrol('Style','slider','Min',slmin,'Max',slmax,...
-    'SliderStep',[1 1]./(slmax-slmin),'Value',1,...
-    'Position',[20 20 200 20]);
-set(hsl,'Callback',@MyCallback);
-
-function MyCallback(hObject,eventdata)
-global i;
-global data_6MWT;
-global data_Mes;
-global quantiteM_norm;
-global hsl;
-
-for i = 1:length(data_Mes)
-    clear quantiteM_norm;
-    hold on; box on; grid on;
-    title('Résultats normalisés et lissés');
-    xlabel(['Temps (1 unité = ',data_Mes(1).Epoch,' s)']);
-    ylabel('Quantité de mouvement (%6MWT)');
-    % Normaliser la quantité de mouvement / moyenne obtenue au 6MWT    
-    quantiteM_norm = data_Mes(i).quantiteM/round(data_6MWT.ref_6MWT)*100; % %6MWT
-    % Appliquer une moyenne glissante sur les données (slider) 
-    plot(movmean(quantiteM_norm,hObject.Value));
-    sliderValue = get(hsl, 'Value');
-    legends = ['Moyenne glissante : ',num2str(sliderValue),' unité de temps'];
-    legend(legends);
-end
-% delete(gca); 

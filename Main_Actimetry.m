@@ -62,7 +62,8 @@ clear temp;
 disp(' '); disp('>>> Affichage des résultats');
 temp = input('- Affichage des résultats? (OUI/NON) : ','s');
 if strcmp(temp,'OUI')
-    plot_result();
+    interval = input('- Interval de temps pour l''affichage (min) : ');
+    plot_result(interval);
 else
     disp('- Aucun affichage demandé');
 end
