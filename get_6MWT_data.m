@@ -36,28 +36,28 @@ clear temp1 temp2 temp3 temp4;
 % -------------------------------------------------------------------------
 % Extraire les données du 6 minutes (accélérations uniquement)
 % -------------------------------------------------------------------------
-data_6MWT.AccX        = data_6MWT.data(:,1); % Acceleration mesurée /X , m.s-2
-data_6MWT.AccY        = data_6MWT.data(:,2); % Acceleration mesurée /Y , m.s-2
-data_6MWT.AccZ        = data_6MWT.data(:,3); % Acceleration mesurée /Z , m.s-2
-data_6MWT.Step        = data_6MWT.data(:,4); % Nombre de pas mesurés   , adim
-data_6MWT.Lux         = data_6MWT.data(:,5); % Eclairement mesurés     , lux
-data_6MWT.IncOff      = data_6MWT.data(:,6); % Aucune position mesurée , s
-data_6MWT.IncStanding = data_6MWT.data(:,7); % Temps en position debout, s
-data_6MWT.IncSitting  = data_6MWT.data(:,8); % Temps en position assise, s
-data_6MWT.IncLying    = data_6MWT.data(:,9); % Temps de position alongé, s
+data_6MWT.AccX        = data_6MWT.data(:,1);   % Acceleration mesurée /X    , m.s-2
+data_6MWT.AccY        = data_6MWT.data(:,2);   % Acceleration mesurée /Y    , m.s-2
+data_6MWT.AccZ        = data_6MWT.data(:,3);   % Acceleration mesurée /Z    , m.s-2
+data_6MWT.AccNORM     = sqrt(data_6MWT.AccX.^2 + ...
+                           data_6MWT.AccY.^2 + ...
+                           data_6MWT.AccZ.^2); % Norme de l'acceleration 3D , m.s-2
+data_6MWT.Step        = data_6MWT.data(:,4);   % Nombre de pas mesurés      , adim
+data_6MWT.Lux         = data_6MWT.data(:,5);   % Eclairement mesurés        , lux
+data_6MWT.IncOff      = data_6MWT.data(:,6);   % Aucune position mesurée    , s
+data_6MWT.IncStanding = data_6MWT.data(:,7);   % Temps en position debout   , s
+data_6MWT.IncSitting  = data_6MWT.data(:,8);   % Temps en position assise   , s
+data_6MWT.IncLying    = data_6MWT.data(:,9);   % Temps de position alongé   , s
 
 % -------------------------------------------------------------------------
-% Calculer la moyenne de la quantité de mouvement pdt le 6MWT (reference)
+% Calculer la moyenne de la norme de l'acc. 3D pdt le 6MWT (reference)
 % -------------------------------------------------------------------------
-data_6MWT.quantiteM = sqrt(data_6MWT.AccX.^2 + ...
-                           data_6MWT.AccY.^2 + ...
-                           data_6MWT.AccZ.^2); % m.s-2
 figure(); hold on; box on; grid on;
 title('Sélectionnez la zone correspondant au 6MWT');
-plot(data_6MWT.quantiteM);
+plot(data_6MWT.AccNORM);
 time_6MWT = ginput(2); % Définir la zone d'acquisition du 6MWT
-data_6MWT.ref_6MWT  = mean(data_6MWT.quantiteM(round(time_6MWT(1,1):...
-                                               round(time_6MWT(2,1)))));
+data_6MWT.ref_6MWT  = mean(data_6MWT.AccNORM(round(time_6MWT(1,1):...
+                                             round(time_6MWT(2,1)))));
 
 % -------------------------------------------------------------------------                                           
 % Sauvegarder les données

@@ -37,20 +37,26 @@ end
 data_Mes = temp;
 
 % -------------------------------------------------------------------------
-% Afficher les résultats bruts
+% Préparer la figure
 % -------------------------------------------------------------------------
 figure(); hold on; box on; grid on;
 title('Résultats normalisés');
-% Trouver la plus longue mesure
+
+% -------------------------------------------------------------------------
+% Trouver la plus longue mesure (en temps)
+% -------------------------------------------------------------------------
 maxMes = 0;
 imaxMes = [];
 for i = 1:length(data_Mes)
-    if size(data_Mes(i).quantiteM,1) > maxMes
+    if size(data_Mes(i).AccNORM,1) > maxMes
         imaxMes = i;
     end
 end
+
+% -------------------------------------------------------------------------
 % Préparer l'affichage HH:MM
-minVal = [1:1:round(size(data_Mes(imaxMes).quantiteM,1)/(60/str2num(data_Mes(imaxMes).Epoch)))];
+% -------------------------------------------------------------------------
+minVal = [1:1:round(size(data_Mes(imaxMes).AccNORM,1)/(60/str2num(data_Mes(imaxMes).Epoch)))];
 for i = 1:length(minVal)
     clear temp;
     start = str2num(data_Mes(imaxMes).Stime);
@@ -63,27 +69,36 @@ for i = 1:length(minVal)
     else
         temp = minVal(i);
     end
-    hourVal{i} = [num2str(start),':',num2str(temp)];
+    if temp < 10
+        hourVal{i} = [num2str(start),':0',num2str(temp-1)];
+    else
+        hourVal{i} = [num2str(start),':',num2str(temp-1)];
+    end
 end
-% Adapter en fonction de l'interval de temps souhaité
+
+% -------------------------------------------------------------------------
+% Adapter les données en fonction de l'interval de temps souhaité
+% -------------------------------------------------------------------------
 j = 1;
 for i = 1:interval:length(minVal)
-    xVal(j) = minVal(i)*size(data_Mes(imaxMes).quantiteM,1)/length(minVal);
+    xVal(j) = minVal(i)*size(data_Mes(imaxMes).AccNORM,1)/length(minVal);
     xLab{j} = hourVal{i};
     j = j+1;
 end
-% Afficher les résultats
+
+% -------------------------------------------------------------------------
+% Tracer les mesures
+% -------------------------------------------------------------------------
 xticks(xVal);
 xticklabels(xLab);
 xtickangle(90);
 xlabel(['Temps (interval de ',num2str(interval),' min)']);
-ylabel('Quantité de mouvement (%6MWT)');
+ylabel('Intensité de l''activité (%6MWT)');
 legends = {};
 for i = 1:length(data_Mes)
-    clear quantiteM_norm;
-    % Normaliser la quantité de mouvement / moyenne obtenue au 6MWT
-    quantiteM_norm = data_Mes(i).quantiteM/round(data_6MWT.ref_6MWT)*100; % %6MWT
-    plot(quantiteM_norm);
+    clear AccNORM_norm;
+    AccNORM_norm = data_Mes(i).AccNORM/round(data_6MWT.ref_6MWT)*100; % %6MWT
+    plot(AccNORM_norm);
     legends = [legends ['Test du ',data_Mes(i).Date]];
 end
 legend(legends);

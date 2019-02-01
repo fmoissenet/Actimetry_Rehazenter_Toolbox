@@ -54,22 +54,18 @@ for i = 1:nfile
     % ---------------------------------------------------------------------
     % Extraire les données des mesures sur patient
     % ---------------------------------------------------------------------
-    data_Mes.AccX        = data_Mes.data(:,1); % Acceleration mesurée /X , m.s-2
-    data_Mes.AccY        = data_Mes.data(:,2); % Acceleration mesurée /Y , m.s-2
-    data_Mes.AccZ        = data_Mes.data(:,3); % Acceleration mesurée /Z , m.s-2
-    data_Mes.Step        = data_Mes.data(:,4); % Nombre de pas mesurés   , adim
-    data_Mes.Lux         = data_Mes.data(:,5); % Eclairement mesurés     , lux
-    data_Mes.IncOff      = data_Mes.data(:,6); % Aucune position mesurée , s
-    data_Mes.IncStanding = data_Mes.data(:,7); % Temps en position debout, s
-    data_Mes.IncSitting  = data_Mes.data(:,8); % Temps en position assise, s
-    data_Mes.IncLying    = data_Mes.data(:,9); % Temps de position alongé, s
-
-    % ---------------------------------------------------------------------
-    % Calculer la quantité de mouvement (norme de l'accélération 3D)
-    % ---------------------------------------------------------------------
-    data_Mes.quantiteM = sqrt(data_Mes.AccX.^2 + ...
-                              data_Mes.AccY.^2 + ...
-                              data_Mes.AccZ.^2); % m.s-2
+    data_Mes.AccX        = data_Mes.data(:,1);     % Acceleration mesurée /X    , m.s-2
+    data_Mes.AccY        = data_Mes.data(:,2);     % Acceleration mesurée /Y    , m.s-2
+    data_Mes.AccZ        = data_Mes.data(:,3);     % Acceleration mesurée /Z    , m.s-2
+    data_Mes.AccNORM     = sqrt(data_Mes.AccX.^2 + ...
+                                data_Mes.AccY.^2 + ...
+                                data_Mes.AccZ.^2); % Norme de l'acceleration 3D , m.s-2
+    data_Mes.Step        = data_Mes.data(:,4);     % Nombre de pas mesurés      , adim
+    data_Mes.Lux         = data_Mes.data(:,5);     % Eclairement mesurés        , lux
+    data_Mes.IncOff      = data_Mes.data(:,6);     % Aucune position mesurée    , s
+    data_Mes.IncStanding = data_Mes.data(:,7);     % Temps en position debout   , s
+    data_Mes.IncSitting  = data_Mes.data(:,8);     % Temps en position assise   , s
+    data_Mes.IncLying    = data_Mes.data(:,9);     % Temps de position alongé   , s
 
     % ---------------------------------------------------------------------
     % Sauvegarder les données
